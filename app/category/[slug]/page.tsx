@@ -8,7 +8,16 @@ import { useDispatch } from 'react-redux'
 import { addToCart } from '@/app/store/features/cartSlice'
 import toast from 'react-hot-toast'
 
-const categoryProducts = {
+interface Product {
+  id: string
+  name: string
+  price: number
+  image: string
+  category: string
+  quantity?: number
+}
+
+const categoryProducts: Record<string, Product[]> = {
   fashion: [
     {
       id: '1',
@@ -41,49 +50,17 @@ const categoryProducts = {
       category: 'Electronics',
     },
   ],
-  jewelry: [
-    {
-      id: '5',
-      name: 'Gold Necklace',
-      price: 499.99,
-      image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800',
-      category: 'Jewelry',
-    },
-    {
-      id: '6',
-      name: 'Diamond Ring',
-      price: 999.99,
-      image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800',
-      category: 'Jewelry',
-    },
-  ],
-  beauty: [
-    {
-      id: '7',
-      name: 'Skincare Set',
-      price: 89.99,
-      image: 'https://images.unsplash.com/photo-1612817288484-6f916006741a?w=800',
-      category: 'Beauty',
-    },
-    {
-      id: '8',
-      name: 'Makeup Kit',
-      price: 129.99,
-      image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800',
-      category: 'Beauty',
-    },
-  ],
 }
 
 export default function CategoryPage() {
   const params = useParams()
   const dispatch = useDispatch()
   const slug = params.slug as string
-  const products = categoryProducts[slug as keyof typeof categoryProducts] || []
+  const products = categoryProducts[slug] || []
   const categoryName = slug.charAt(0).toUpperCase() + slug.slice(1)
 
-  const handleAddToCart = (product: any) => {
-    dispatch(addToCart(product))
+  const handleAddToCart = (product: Product) => {
+    dispatch(addToCart({ ...product, quantity: 1 }))
     toast.success('Added to cart!')
   }
 
@@ -120,7 +97,7 @@ export default function CategoryPage() {
                 <div className="mt-4">
                   <Link
                     href={`/product/${product.id}`}
-                    className="block text-base font-semibold hover:text-primary-600 sm:text-lg"
+                    className="block text-base font-semibold hover:text-blue-600 sm:text-lg"
                   >
                     {product.name}
                   </Link>
@@ -133,7 +110,7 @@ export default function CategoryPage() {
                     </span>
                     <button
                       onClick={() => handleAddToCart(product)}
-                      className="rounded-lg bg-primary-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-primary-700 sm:px-4 sm:py-2"
+                      className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-blue-700 sm:px-4 sm:py-2"
                     >
                       Add to Cart
                     </button>
@@ -146,4 +123,4 @@ export default function CategoryPage() {
       </div>
     </section>
   )
-} 
+}
